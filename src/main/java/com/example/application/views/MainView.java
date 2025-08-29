@@ -14,10 +14,7 @@ import com.vaadin.flow.component.sidenav.SideNavItem;
 import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
-import com.vaadin.flow.router.Route;
 import jakarta.annotation.security.PermitAll;
-
-import java.awt.*;
 
 
 //@Route("welcome")

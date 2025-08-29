@@ -1,8 +1,7 @@
 package com.example.application.security;
 
-import com.example.application.UserRepo;
-import com.example.application.models.AppUser;
-import com.example.application.views.LoginView;
+import com.example.application.account.AppUser;
+import com.example.application.account.UserRepo;
 import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +31,7 @@ public class SecurityConfiguration extends VaadinWebSecurity {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers(new AntPathRequestMatcher("/images/**")).permitAll()
-                //.anyRequest().authenticated() // 🔒 Require login for everything else
+                //.anyRequest().authenticated() // Require login for everything else
         );
         http.formLogin(form -> form
                 .loginPage("/login")

@@ -13,9 +13,6 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.auth.AnonymousAllowed;
 import com.vaadin.flow.spring.annotation.UIScope;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-
 @Route("")
 @AnonymousAllowed
 @UIScope
