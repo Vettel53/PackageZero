@@ -51,7 +51,6 @@ public class DashboardBuilder {
         addRunButton.addClickListener(event -> {
             // Load the entry run dialog when addRunButton is clicked
             addDialog.showAddRunDialog(loggedInAppUser);
-            Notification.show("ADD BUTTON CLICKED");
         });
 
         // Add run button to horizontalLayout

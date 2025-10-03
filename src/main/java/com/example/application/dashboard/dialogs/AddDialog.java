@@ -25,7 +25,7 @@ import java.math.BigDecimal;
 @Component
 @UIScope
 public class AddDialog {
-    // Initialize member variables
+
     static final String REGEX_PATTERN = "\\d{1,2}\\.\\d{1,4}";
     static final String ALLOWED_CHARACTER_PATTERN = "[0-9.]";
     DatePicker datePicker;
@@ -41,9 +41,8 @@ public class AddDialog {
     TextField fullTrack;
     TextField speed;
 
-    @Value("${debug.fake.runs.generation}")
+    @Value("${runs.fake-generation.button}")
     private boolean fakeRunGenerationButton;
-
     Run createdRun;
 
     private final DashboardService dashboardService;
@@ -53,16 +52,12 @@ public class AddDialog {
     }
 
     public void showAddRunDialog(AppUser loggedInAppUser) {
-        // Instantiate Dialog Vaadin Box
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("New Run");
 
-        // Call helper method to generate vertical layout
         VerticalLayout dialogLayout = createRunEntryDialogLayout();
-        // Add VerticalLayout to dialog box
         dialog.add(dialogLayout);
 
-        // Add save and cancel buttons to dialog footer
         Button addRunButton = new Button("Save");
         Button cancelRunButton = new Button("Cancel");
         dialog.getFooter().add(cancelRunButton);
@@ -75,12 +70,7 @@ public class AddDialog {
 
         dialog.open();
 
-        // Add event listener to save button
-        // TODO: Put this in another method?
         addRunButton.addClickListener(event -> {
-            // Create Run object from form data
-            // USE THIS IN PRODUCTION FOR RUN TO BE CONSTRUCTED USING THE FORM FIELDS
-
             if (checkIfFieldsAreNull()) {
                 return;
             }
@@ -100,11 +90,9 @@ public class AddDialog {
                     new BigDecimal(fullTrack.getValue()),
                     new BigDecimal(speed.getValue())
             );
-            System.out.println(timePicker.getValue());
+
             dashboardService.constructRunEntry(createdRun);
 
-            // Save the fake Run to the database
-            //createdRun = dashboardService.constructFakeRunEntry(loggedInAppUser);
             if (createdRun == null) {
                 Notification.show("Weather API down, please try again later...");
                 return;
@@ -118,7 +106,6 @@ public class AddDialog {
             Notification.show("Run saved successfully", 3000, Notification.Position.TOP_CENTER);
         });
 
-        // Add event listener to cancel button
         cancelRunButton.addClickListener(event -> {
             dialog.close();
             Notification.show("Cancelled adding run", 3000, Notification.Position.TOP_CENTER);
@@ -134,6 +121,7 @@ public class AddDialog {
                 dashboardService.constructRunEntry(fakeRun);
                 dashboardService.callUpdateGridAfterAdd(fakeRun);
             }
+            Notification.show("Created (5) fake runs...", 3000, Notification.Position.TOP_CENTER);
         });
 
         return fakeRunsButton;
@@ -211,8 +199,6 @@ public class AddDialog {
     }
 
     private VerticalLayout createRunEntryDialogLayout() {
-        // Initialize instance variables
-        // Initialize FormLayout with correct properties
         FormLayout formLayout = new FormLayout();
 
         formLayout.add(

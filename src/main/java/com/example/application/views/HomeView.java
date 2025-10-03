@@ -135,7 +135,9 @@ public class HomeView extends VerticalLayout {
         heroSection.setPadding(true);
         heroSection.setSpacing(true);
         heroSection.setDefaultHorizontalComponentAlignment(Alignment.CENTER);
-        heroSection.getStyle().set("background-image", "linear-gradient(var(--lumo-primary-color-10pct), var(--lumo-primary-color-50pct))");
+        heroSection.getStyle().set("background-image", "linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(images/americandragster.jpeg)");
+        heroSection.getStyle().set("background-size", "cover");
+        heroSection.getStyle().set("background-position", "center");
         heroSection.getStyle().set("text-align", "center");
         heroSection.getStyle().set("padding-top", "4em");
         heroSection.getStyle().set("padding-bottom", "4em");
@@ -156,9 +158,9 @@ public class HomeView extends VerticalLayout {
         heroImageContainer.setWidth("80%");
         heroImageContainer.setMaxWidth("800px");
         heroImageContainer.getStyle().set("margin-top", "3em");
-        heroImageContainer.getStyle().set("background-color", "var(--lumo-base-color)");
+        heroImageContainer.getStyle().set("background-color", "transparent");
         heroImageContainer.getStyle().set("border-radius", "8px");
-        heroImageContainer.getStyle().set("box-shadow", "0 4px 20px rgba(0,0,0,0.1)");
+        //heroImageContainer.getStyle().set("box-shadow", "0 4px 20px rgba(0,0,0,0.1)");
         heroImageContainer.getStyle().set("height", "350px");
         heroImageContainer.getStyle().set("display", "flex");
         heroImageContainer.getStyle().set("align-items", "center");
@@ -168,13 +170,13 @@ public class HomeView extends VerticalLayout {
         placeholderText.getStyle().set("color", "var(--lumo-tertiary-text-color)");
         placeholderText.getStyle().set("font-style", "italic");
 
-        Image image = new Image("images/americandragster.jpeg", "American Dragster");
-        image.getStyle().set("object-fit", "cover");
-        image.getStyle().set("border-radius", "8px");
-        image.setWidth("100%");
-        image.setHeight("100%");
+//        Image image = new Image("images/americandragster.jpeg", "American Dragster");
+//        image.getStyle().set("object-fit", "cover");
+//        image.getStyle().set("border-radius", "8px");
+//        image.setWidth("100%");
+//        image.setHeight("100%");
 
-        heroImageContainer.add(image);
+        //heroImageContainer.add(image);
 
         heroSection.add(heroTitle, heroSubtitle, getStartedButton, heroImageContainer);
         add(heroSection);

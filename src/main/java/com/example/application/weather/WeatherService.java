@@ -1,13 +1,11 @@
 package com.example.application.weather;
 
 import com.example.application.run.Run;
-import com.example.application.run.RunRepo;
 import com.nimbusds.jose.shaded.gson.JsonArray;
 import com.nimbusds.jose.shaded.gson.JsonObject;
 import com.nimbusds.jose.shaded.gson.JsonParser;
 import com.vaadin.flow.component.notification.Notification;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.env.Environment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -23,18 +21,17 @@ public class WeatherService {
 
     private final WebClient.Builder builder;
     private final WeatherRepo weatherRepo;
-    private final RunRepo runRepo;
-    @Autowired
-    private Environment environment;
 
-    public WeatherService(WeatherRepo weatherRepo, RunRepo runRepo) {
+    @Value("${weatherapi.local}")
+    private boolean localWeatherAPI;
+
+    public WeatherService(WeatherRepo weatherRepo) {
         builder = WebClient.builder();
         this.weatherRepo = weatherRepo;
-        this.runRepo = runRepo;
     }
 
-    // Used for the fake run generation (Preset/Hardcoded Variables)
-    public Weather getCurrentWeather() {
+    // Used for the fake run generation (Use realistic data in future)
+    public Weather getFakeWeather() {
         Weather fakeWeather = new Weather();
 
         fakeWeather.setTemperature("1010");
@@ -76,7 +73,7 @@ public class WeatherService {
         } catch (Exception e) {
             System.out.println("Weather API Most likely down!" + e.getMessage());
             e.printStackTrace();
-            return null; // Return null after exception caught
+            return null;
         }
     }
 
@@ -115,9 +112,9 @@ public class WeatherService {
     }
 
     private URI getAPIURL() throws URISyntaxException {
-        if(environment.matchesProfiles("h2")) { // H2 database (testing/development most likely)
+        if(localWeatherAPI) { // Using a locally hosted API
             return new URI("http://localhost:8081/weather/by-datetime");
-        } else { // Can only be railway spring profile, in production.
+        } else { // Using externally hosted API
             // TODO: CHANGE
             return new URI("https://trackweatherapi-production.up.railway.app/weather");
         }

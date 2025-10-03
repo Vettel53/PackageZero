@@ -32,59 +32,6 @@ public class StatisticsView extends HorizontalLayout {
         add(createOverPercentageCard());
     }
 
-    // OUTDATED - Using Cards instead
-    // private Chart createBreakOutChart() {
-    //     // Create Chart
-    //     Chart chart = new Chart(ChartType.PIE);
-    //     chart.getStyle().setBackgroundColor("#f5f5f5");
-    //     Configuration conf = chart.getConfiguration();
-    //     conf.setTitle("Percentage of Break-outs");
-
-    //     // Configuring Tooltip (Decimals for better precision)
-    //     Tooltip tooltip = new Tooltip();
-    //     tooltip.setValueDecimals(1);
-    //     conf.setTooltip(tooltip);
-
-    //     // Setting up Pie Chart options
-    //     PlotOptionsPie plotOptions = new PlotOptionsPie();
-    //     plotOptions.setAllowPointSelect(true);
-    //     plotOptions.setCursor(Cursor.POINTER);
-    //     plotOptions.setShowInLegend(true);
-    //     conf.setPlotOptions(plotOptions);
-
-    //     // Retrieving Break-Out/Ran-Above Stats
-    //     DataSeries series = new DataSeries();
-    //     BigDecimal breakOutPercentage = statisticsService.getBreakoutPercentage();
-    //     BigDecimal ranAbovePercentage = statisticsService.getOverPercentage();
-
-    //     // Add correct Data (Edge-case handling)
-    //     if (breakOutPercentage == null || ranAbovePercentage == null) {
-    //         series.add(new DataSeriesItem("No Runs...", 100.00));
-    //     } else {
-    //         series.add(new DataSeriesItem("Break Out", breakOutPercentage));
-    //         series.add(new DataSeriesItem("Ran Above", ranAbovePercentage));
-    //     }
-
-    //     // Set final settings
-    //     conf.setSeries(series);
-    //     chart.setVisibilityTogglingDisabled(true);
-
-    //     return chart;
-    // }
-
-
-    // OUTDATED - Using Cards instead
-    // private Span createReactionTimeChart() {
-    //     Span reactionTimeLabel;
-    //     if (statisticsService.getReactionAverage() == null) {
-    //         reactionTimeLabel = new Span("Error: Try adding more runs!");
-    //     } else {
-    //         reactionTimeLabel = new Span("Average Reaction Time: " + statisticsService.getReactionAverage() + " sec");
-    //     }
-
-    //     return reactionTimeLabel;
-    // }
-
     private Div createReactionTimeCard() {
         String titleText = "Reaction Time";
         String subtitleText = "Average Reaction Time Of All Runs";

@@ -1,6 +1,7 @@
 package com.example.application.run;
 
 import com.example.application.account.AppUser;
+import com.vaadin.flow.component.notification.Notification;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

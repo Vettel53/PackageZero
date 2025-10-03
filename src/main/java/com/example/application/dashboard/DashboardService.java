@@ -10,6 +10,7 @@ import com.example.application.weather.WeatherService;
 import com.example.application.weather.WeatherRepo;
 import com.vaadin.flow.spring.annotation.VaadinSessionScope;
 import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,9 @@ public class DashboardService {
     private final WeatherRepo weatherRepo;
     private final SecurityService securityService;
     private final WeatherService weatherService;
+
+    @Value("${weatherapi.fake-weather}")
+    private boolean fakeWeatherGeneration;
 
     // Setter injection to access a method in dashboardView
     private DashboardView dashboardView;
@@ -59,61 +63,18 @@ public class DashboardService {
         return runRepo.findByAppUser(loggedInAppUser);
     }
 
-    // Used to create fake run entries for ease
-    @Transactional
-    public Run constructFakeRunEntry(AppUser loggedInAppUser) {
-        // Fake values for LocalDate and LocalTime
-        LocalDate date = LocalDate.of(2023, 10, 26); // Example date
-        LocalTime time = LocalTime.of(14, 30); // Example time
-
-        // Fake values for String fields
-        String carText = "1969 Camaro";
-        String driverText = "John Doe";
-        String trackText = "Edinburg Motorsports Park";
-        String laneText = "Left";
-
-        // Fake values for BigDecimal fields
-        BigDecimal dialText = new BigDecimal("10.50");
-        BigDecimal reactionText = new BigDecimal("0.123");
-        BigDecimal sixtyFootText = new BigDecimal("1.85");
-        BigDecimal halfTrackText = new BigDecimal("7.503");
-        BigDecimal fullTrackText = new BigDecimal("11.90");
-        BigDecimal speedText = new BigDecimal("115.75");
-
-        // Create a new Run object with the entered values and save it to the database
-        Run newFakeRun = new Run(loggedInAppUser, date, time, carText, driverText, trackText, laneText, dialText, reactionText, sixtyFootText, halfTrackText, fullTrackText, speedText);
-
-        // Get current track weather
-        Weather trackWeather = weatherService.getCurrentWeather();
-        if (trackWeather == null) {
-            return null;
-        }
-
-        // Save run to H2 database to create primary key ID
-        runRepo.save(newFakeRun);
-
-        // Set trackWeather Run ID to created run
-        trackWeather.setRun(newFakeRun);
-
-        // Set the created run's weather
-        newFakeRun.setWeather(trackWeather);
-
-        // Save weather to H2 database
-        weatherRepo.save(trackWeather);
-
-        return newFakeRun;
-    }
-
-
-    // Used to create a new REAL run entry for the authenticated user
     @Transactional
     public void constructRunEntry(Run runToSave) {
         // Save run to generate Run ID
         runRepo.save(runToSave);
 
-        // Get current track weather
-        //Weather trackWeather = weatherService.getCurrentWeather(runToSave.getTrack(), runToSave.getDate(), runToSave.getTime());
-        Weather trackWeather = weatherService.getCurrentWeather();
+        Weather trackWeather;
+        if (fakeWeatherGeneration) {
+            trackWeather = weatherService.getFakeWeather();
+        } else {
+            trackWeather = weatherService.getCurrentWeather(runToSave.getTrack(), runToSave.getDate(), runToSave.getTime());
+        }
+
         // Set trackWeather Run ID to created run
         trackWeather.setRun(runToSave);
 
@@ -140,12 +101,10 @@ public class DashboardService {
         runToEdit.setFullTrack(editedFullTrack);
         runToEdit.setSpeed(editedSpeed);
 
-        // Save the edited run to the database
         runRepo.save(runToEdit);
     }
 
     public void deleteRun(Run runToDelete) {
-        // Delete the run from the database
         System.out.println("Run ID: " + runToDelete.getId());
         System.out.println("Weather: " + runToDelete.getWeather());
         if (runToDelete.getWeather() != null) {
