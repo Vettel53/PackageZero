@@ -4,6 +4,7 @@ import com.example.application.account.AppUser;
 import com.example.application.dashboard.DashboardService;
 import com.example.application.run.Run;
 import com.example.application.run.FakeRunGenerationService;
+import com.example.application.run.RunService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -26,8 +27,12 @@ import java.math.BigDecimal;
 @UIScope
 public class AddDialog {
 
+    @Value("${runs.fake-generation.button}")
+    private boolean fakeRunGenerationButton;
+
     static final String REGEX_PATTERN = "\\d{1,2}\\.\\d{1,4}";
     static final String ALLOWED_CHARACTER_PATTERN = "[0-9.]";
+    private final RunService runService;
     DatePicker datePicker;
     TimePicker timePicker;
     TextField car;
@@ -41,14 +46,13 @@ public class AddDialog {
     TextField fullTrack;
     TextField speed;
 
-    @Value("${runs.fake-generation.button}")
-    private boolean fakeRunGenerationButton;
     Run createdRun;
 
     private final DashboardService dashboardService;
 
-    public AddDialog(DashboardService dashboardService) {
+    public AddDialog(DashboardService dashboardService, RunService runService) {
         this.dashboardService = dashboardService;
+        this.runService = runService;
     }
 
     public void showAddRunDialog(AppUser loggedInAppUser) {
@@ -91,7 +95,7 @@ public class AddDialog {
                     new BigDecimal(speed.getValue())
             );
 
-            dashboardService.constructRunEntry(createdRun);
+            runService.constructRunEntry(createdRun);
 
             if (createdRun == null) {
                 Notification.show("Weather API down, please try again later...");
@@ -118,7 +122,7 @@ public class AddDialog {
             for (int i = 0; i < 5; i++) {
                 // Generate the fake run then refresh the grid
                 Run fakeRun = FakeRunGenerationService.generateFakeRun(loggedInAppUser);
-                dashboardService.constructRunEntry(fakeRun);
+                runService.constructRunEntry(fakeRun);
                 dashboardService.callUpdateGridAfterAdd(fakeRun);
             }
             Notification.show("Created (5) fake runs...", 3000, Notification.Position.TOP_CENTER);

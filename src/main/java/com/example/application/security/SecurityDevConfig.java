@@ -6,6 +6,7 @@ import com.vaadin.flow.spring.security.VaadinWebSecurity;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.userdetails.User;
@@ -19,18 +20,20 @@ import java.util.List;
 
 @EnableWebSecurity
 @Configuration
-public class SecurityConfiguration extends VaadinWebSecurity {
+@Profile("h2")
+public class SecurityDevConfig extends VaadinWebSecurity {
 
     private final UserRepo userRepo;
 
-    public SecurityConfiguration(UserRepo userRepo) {
+    public SecurityDevConfig(UserRepo userRepo) {
         this.userRepo = userRepo;
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers(new AntPathRequestMatcher("/images/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/images/**")).permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/console/**")).permitAll()
                 //.anyRequest().authenticated() // Require login for everything else
         );
         http.formLogin(form -> form
@@ -39,6 +42,10 @@ public class SecurityConfiguration extends VaadinWebSecurity {
                 .defaultSuccessUrl("/dashboard", true)
                 .permitAll()
         );
+
+        // Required for H2 console
+        http.csrf(csrf -> csrf.ignoringRequestMatchers(new AntPathRequestMatcher("/console/**")));
+        http.headers(headers -> headers.frameOptions().disable());
 
         super.configure(http);
     }

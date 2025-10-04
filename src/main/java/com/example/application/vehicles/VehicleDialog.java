@@ -64,8 +64,7 @@ public class VehicleDialog {
         Button save = new Button("Save", e -> {
             if (binder.validate().isOk()) {
                 Vehicle vehicle = new Vehicle();
-                binder.writeBeanIfValid(vehicle);
-                // persist vehicle...
+                binder.writeBeanIfValid(vehicle); // save vehicle...
                 Notification.show("Vehicle created successfully");
                 dialog.close();
             }

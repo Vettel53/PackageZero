@@ -1,11 +1,9 @@
 package com.example.application.statistics;
 
+import com.example.application.account.UserService;
 import com.example.application.run.RunRepo;
 import com.example.application.account.AppUser;
-import com.example.application.account.UserRepo;
 import com.example.application.run.Run;
-import com.example.application.security.SecurityService;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -14,18 +12,17 @@ import java.math.RoundingMode;
 @Service
 public class StatisticsService {
 
-    private final UserRepo userRepo;
     private final RunRepo runRepo;
-    private final SecurityService securityService;
+    private final UserService userService;
 
-    public StatisticsService(UserRepo userRepo, RunRepo runRepo, SecurityService securityService) {
-        this.userRepo = userRepo;
+    public StatisticsService(RunRepo runRepo, UserService userService) {
         this.runRepo = runRepo;
-        this.securityService = securityService;
+        this.userService = userService;
     }
 
     public BigDecimal getBreakoutPercentage() {
         AppUser appUser = getCurrentUser();
+
         if (appUser == null) {
             return null;
         }
@@ -55,13 +52,8 @@ public class StatisticsService {
     }
 
     private AppUser getCurrentUser() {
-        UserDetails loadUserDetails = securityService.getAuthenticatedUser();
-        if (loadUserDetails == null) {
-            return null;
-        }
-        String username = loadUserDetails.getUsername();
-
-        return userRepo.findByUsername(username);
+        String username = userService.getUsername();
+        return userService.getCurrentAppUser(username);
     }
 
     public BigDecimal getOverPercentage() {

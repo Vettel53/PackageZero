@@ -36,16 +36,14 @@ public class DashboardView extends VerticalLayout {
         // Setter injection for service to access this classes methods
         dashboardService.setDashboardView(this);
 
-        loadMainComponents();
+        loadUI();
     }
 
-    // Loads grid and add run button
-    private void loadMainComponents() {
+    private void loadUI() {
         // Get data for grid population
         dataProvider = getDataProvider();
         grid = runsGrid.getGrid(grid, dataProvider);
 
-        // Add main components to grid
         add(dashboardBuilder.buildMainHorizontalLayout(loggedInAppUser));
         add(grid);
     }
@@ -53,22 +51,14 @@ public class DashboardView extends VerticalLayout {
     // Might put this in another class like service
     private ListDataProvider<Run> getDataProvider() {
         // TODO: Some form of error efficent handling (Make experience smooth for user)
-        // Get the username from the authenticated user
-        String username = dashboardService.getAuthenticatedUserName();
-        if (username == null) {
-            return null;
-        }
-        loggedInAppUser = dashboardService.getAppUserByUsername(username);
-        System.out.println("The Logged in User has this username: " + loggedInAppUser.getUsername());
+        loggedInAppUser = dashboardService.getAppUserByUsername();
 
         // Get all runs for the logged-in user
         List<Run> appUserRuns = dashboardService.getAllRunsFromUser(loggedInAppUser);
-        // Create dataprovider which holds logged-in user runs
         dataProvider = new ListDataProvider<>(appUserRuns);
         return dataProvider;
     }
 
-    // Understand the reason we are using this.getUI()
     // TODO: Understand @UIScope @VaadinSessionScope annotations etc
     public void updateGridAfterAdd(Run createdRun) {
         this.getUI().get().access(() -> {

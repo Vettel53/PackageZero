@@ -2,8 +2,8 @@ package com.example.application.dashboard.dialogs;
 
 import com.example.application.dashboard.DashboardService;
 import com.example.application.run.Run;
+import com.example.application.run.RunService;
 import com.example.application.weather.WeatherService;
-import com.example.application.weather.WeatherRepo;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.datepicker.DatePicker;
@@ -28,6 +28,7 @@ import java.math.BigDecimal;
 @UIScope
 public class EditDialog {
     static final String SPEED_REGEX_PATTERN = "\\d{1,3}\\.\\d{1,4}";
+    private final RunService runService;
 
     // "Edit Run" member variables
     private DatePicker editDatePicker;
@@ -47,23 +48,20 @@ public class EditDialog {
     private final WeatherService weatherService;
     private final AddDialog addDialog;
 
-    public EditDialog(DashboardService dashboardService, WeatherService weatherService, WeatherRepo weatherRepo, AddDialog addDialog) {
+    public EditDialog(DashboardService dashboardService, WeatherService weatherService, AddDialog addDialog, RunService runService) {
         this.dashboardService = dashboardService;
         this.weatherService = weatherService;
         this.addDialog = addDialog;
+        this.runService = runService;
     }
 
     public void loadEditRunDialog(Run runToEdit) {
-        // Instantiate Dialog Vaadin Box
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Edit Run");
 
-        // Call helper method to generate vertical layout
         VerticalLayout dialogLayout = createEditRunLayout(runToEdit);
-        // Add VerticalLayout to dialog box
         dialog.add(dialogLayout);
 
-        // Add save and cancel buttons to dialog footer
         Button saveEditButton = new Button("Save");
         Button cancelEditButton = new Button("Cancel");
         dialog.getFooter().add(cancelEditButton);
@@ -88,7 +86,7 @@ public class EditDialog {
             }
 
             // Save the edited run into database
-            dashboardService.saveEditedRun(
+            runService.saveEditedRun(
                     runToEdit,
                     editDatePicker.getValue(),
                     editTimePicker.getValue(),

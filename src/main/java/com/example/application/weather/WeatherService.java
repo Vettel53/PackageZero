@@ -146,4 +146,8 @@ public class WeatherService {
         parsedWeather.setDensityAltitude("null");
         return parsedWeather;
     }
+
+    public void saveWeather(Weather trackWeather) {
+        weatherRepo.save(trackWeather);
+    }
 }

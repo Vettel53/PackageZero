@@ -2,6 +2,7 @@ package com.example.application.dashboard.dialogs;
 
 import com.example.application.dashboard.DashboardService;
 import com.example.application.run.Run;
+import com.example.application.run.RunService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.notification.Notification;
@@ -15,22 +16,20 @@ import org.springframework.stereotype.Component;
 public class DeleteDialog {
 
     private final DashboardService dashboardService;
+    private final RunService runService;
 
-    public DeleteDialog(DashboardService dashboardService) {
+    public DeleteDialog(DashboardService dashboardService, RunService runService) {
         this.dashboardService = dashboardService;
+        this.runService = runService;
     }
 
     public void loadConfirmDeleteDialog(Run runToDelete) {
-        // Instantiate Dialog Delete Box
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Are you sure you want to delete this run?");
 
-        // Call helper method to generate vetical layout
         VerticalLayout dialogLayout = createDeleteRunDialogLayout();
-        // Add VerticalLayout to dialog box
         dialog.add(dialogLayout);
 
-        // Add yes and no buttons to dialog footer
         Button yesButton = new Button("Delete Run");
         Button noButton = new Button("Cancel");
         dialog.getFooter().add(noButton);
@@ -39,8 +38,7 @@ public class DeleteDialog {
         dialog.open();
 
         yesButton.addClickListener(event -> {
-            // Delete the run from the database
-            dashboardService.deleteRun(runToDelete);
+            runService.deleteRun(runToDelete);
 
             // Refresh the grid/data-provider to reflect the changes
             dashboardService.callUpdateGridAfterDelete(runToDelete);
@@ -56,14 +54,12 @@ public class DeleteDialog {
     }
 
     private VerticalLayout createDeleteRunDialogLayout() {
-        // Initialize VerticalLayout with correct properties
         VerticalLayout dialogLayout = new VerticalLayout();
         dialogLayout.setPadding(false);
         dialogLayout.setSpacing(false);
         dialogLayout.setAlignItems(FlexComponent.Alignment.STRETCH);
         dialogLayout.getStyle().set("width", "24rem").set("max-width", "100%");
 
-        // Return VerticalLayout
         return dialogLayout;
     }
 
